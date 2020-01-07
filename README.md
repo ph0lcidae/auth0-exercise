@@ -1,2 +1,2 @@
 # auth0-exercise
-Technical exercise for auth0.
+Technical exercise for Auth0's User Search API.
