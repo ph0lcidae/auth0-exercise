@@ -1,0 +1,29 @@
+{
+  "name": "auth0-exercise",
+  "version": "1.0.0",
+  "description": "technical exercise for auth0 user search api",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ph0lcidae/auth0-exercise.git"
+  },
+  "author": "Alana Lynch <firinneceartas@protonmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ph0lcidae/auth0-exercise/issues"
+  },
+  "homepage": "https://github.com/ph0lcidae/auth0-exercise#readme",
+  "devDependencies": {
+    "chai": "*",
+    "mocha": "*"
+  },
+  "dependencies": {
+    "auth0": "^2.20.0"
+  }
+}
