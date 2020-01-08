@@ -26,3 +26,10 @@ or replace getById with the test file you wish to run.
 If you'd like to run a single test case:
 `npm run test -- -t "get a nonexistent id"`
 or replace with the test descriptor you'd like to run. Note that this will run all the tests with such a description regardless of the file.
+
+# TODOs and Improvements
+
+Given more time, I'd refactor these to reduce duplication. As it is, I wanted to err on the side of making the test cases for each suite clear; in a day-to-day environment I would write them a bit more concisely.
+I'd also like to review them for JavaScript best practices, though I imagine that would come out in a code review.
+
+Jenkins hooks are not given here, though Jest integrates with Jenkins via the `jest-junit` package (not included here) and a few config files. It would be pretty easy to modify for CI. 

@@ -1,0 +1,8 @@
+const config = {
+  apiToken: {auth0-management-api-token},
+  domain: "{your-domain}.auth0.com",
+  apiBase: "{your-domain}.auth0.com/api/v3/users/",
+  scope: "read:users update:users"
+}
+
+module.exports = config
