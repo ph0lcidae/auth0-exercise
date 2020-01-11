@@ -1,4 +1,4 @@
-const mClient = require('../client/client.js').management;
+const mClient = require('../client/client.js').auth0Manage;
 
 beforeAll(() => {
   // TODO: create test users
