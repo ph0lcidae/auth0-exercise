@@ -25,6 +25,7 @@
     "auth0-js": "^9.12.1",
     "faker": "^4.1.0",
     "jest": "^24.9.0",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "request-promise": "^4.2.5"
   }
 }

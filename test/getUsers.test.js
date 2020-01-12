@@ -1,6 +1,7 @@
 const ManagementClient = require('auth0').ManagementClient;
 const config = require('../config/config.json');
 const faker = require('faker');
+const request = require('request-promise');
 
 var auth0Manage = new ManagementClient({
   domain: config.domain,
@@ -39,7 +40,6 @@ beforeAll( async () => {
 })
 
 afterAll( async () => {
-// I don't know why forEach syntax doesn't work here, but it won't pass the array element to deleteUser()
   for(let i in userIds) {
     await auth0Manage.deleteUser({ id: userIds[i] });
   }
@@ -88,12 +88,14 @@ test('get user by nested property', () => {
   // TODO: get from identities property 
 })
 
-test('pass query that returns nothing', () => {
+test('pass query that returns nothing', async () => {
   var params = {
     search_engine: config.apiVersion,
-    q: 'email:*example*'
+    q: 'email:foo'
   };  
-  // TODO: get an empty query
+  await auth0Manage.getUsers(params).then( data => {
+    expect(data.length).toBe(0);
+  })
 })
 
 test('get user by nonexistent field', async () => {
@@ -135,21 +137,40 @@ test('it handles CJK characters', async () => {
   });  
 })
 
-test('try to send call as POST request', () => {
-  var params = {
-    search_engine: config.apiVersion,
-    q: 'email:*example*'
-  };  
-  // TODO: use request to hit bare endpoint
+test('try to send call as POST request', async () => {
+  
+//   var authBody = JSON.stringify(`{"client_id":${config.clientID},"client_secret":${config.clientSecret},"audience":${config.apiBase},"grant_type":"client_credentials"}`)
+//   var authOptions = { method: 'POST',
+//   url: 'https://ph0lcidae.auth0.com/oauth/token',
+//   headers: { 'content-type': 'application/json' },
+//   body: authBody
+//   };
+  
+//   var authResp = await request(authOptions);
+  
+//   var testOptions = {
+//     method: 'POST',
+//     url: `${config.apiBase}`,
+//     qs: {q: 'email:*example*', search_engine: config.apiVersion },
+//     headers: {authorization: `Bearer ${authResp.access_token}` }
+//   };
+  
+//   await request(testOptions).catch( e => {
+//     expect(e).toBe({
+//       error: "invalid json"
+//     })
+//   });
 })
 
-test('sql injection should not work', () => {
+test('sql injection should not work', async () => {
   var params = {
     search_engine: config.apiVersion,
-    q: 'email:*example*'
+    q: 'email:" or ""="'
   };
-  
-  //TODO: send email that contains sql nonsense
+  await auth0Manage.getUsers(params).then( data => {
+    // this should just return an empty response
+    expect(data.length).toBe(0);
+  })
 })
 
 test('get user that was deleted and recreated', () => {
