@@ -36,6 +36,38 @@ afterAll( async () => {
   }
 })
 
-test('get user by email with get by id endpoint', () => {
+test('sort search results ascending', () => {
+  
+})
+
+test('sort search results descending', () => {
+  
+})
+
+test('sort by numeric field', () => {
+  
+})
+
+test('sort by alphabetical field', () => {
+  
+})
+
+test('sort empty search results', () => {
+  
+})
+
+test('sort search results containing non-alphanumerics', () => {
+  
+})
+
+test('results on same field from different endpoints should be identical when sorted', () => {
+  
+})
+
+test('sort by nothing/nonsense filter', () => {
+  
+})
+
+test('sql injection should not work', () => {
   
 })

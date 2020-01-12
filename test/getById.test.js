@@ -59,3 +59,15 @@ test('get an id from a deleted user', () => {
 test('try to send call as POST request', () => {
   
 })
+
+test('sql injection should not work', () => {
+  
+})
+
+test('get user by id that was deleted and recreated', () => {
+  
+})
+
+test('get by a field that is not id', () => {
+  
+})
