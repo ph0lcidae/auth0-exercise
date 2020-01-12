@@ -19,8 +19,8 @@ var userIds = [];
 beforeAll( async () => {
   for(let i = 0; i <= 1; i++) {
     const md = await auth0Manage.createUser({
-      "name":"test"+i,
-      "email":"test"+i+"@test.not",
+      "name":"test"+Date.now(),
+      "email":"test"+Date.now()+"@test.not",
       "connection": "Username-Password-Authentication",
       "password":"Test1337!"
     });
