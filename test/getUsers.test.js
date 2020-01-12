@@ -20,8 +20,8 @@ var userIds = [];
 beforeAll( async () => {
   for(let i = 0; i <= 1; i++) {
     const md = await auth0Manage.createUser({
-      "name":faker.name.findName(),
-      "email":faker.internet.exampleEmail(),
+      "name": faker.name.findName(),
+      "email": faker.internet.exampleEmail(),
       "connection": "Username-Password-Authentication",
       "password":"Test1337!"
     });
@@ -41,8 +41,12 @@ beforeAll( async () => {
 afterAll( async () => {
 // I don't know why forEach syntax doesn't work here, but it won't pass the array element to deleteUser()
   for(let i = 0; i < userIds.length; i++) {
-    await auth0Manage.deleteUser({ id: userIds[i]});
+    await auth0Manage.deleteUser({ id: userIds[i] });
   }
+  
+  // alternative: NUKE THE ENTIRE SITE FROM ORBIT
+  // (it's the only way to be sure)
+  // await auth0Manage.deleteAllUsers();
 })
 
 test('get users by email domain with wildcards', async () => {
@@ -53,7 +57,10 @@ test('get users by email domain with wildcards', async () => {
   };
   
   await auth0Manage.getUsers(params).then( data => {
-    expect(data.length).toBe(10);
+    expect(data.length).toBe(2);
+    for(var e in data) {
+      expect(data[e].email).toContain('example');
+    }
   });
 })
 
@@ -124,6 +131,7 @@ test('it handles CJK characters', async () => {
   // there's only one of these, the point is that it doesn't collapse
   await auth0Manage.getUsers(params).then( data => {
     expect(data.length).toBe(1);
+    expect(data[0].email).toBe('面条@玉米片.com');
   });  
 })
 
