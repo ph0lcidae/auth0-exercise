@@ -1,5 +1,6 @@
 const ManagementClient = require('auth0').ManagementClient;
 const config = require('../config/config.json');
+const faker = require('faker');
 
 var auth0Manage = new ManagementClient({
   domain: config.domain,
@@ -19,8 +20,8 @@ var userIds = [];
 beforeAll( async () => {
   for(let i = 0; i <= 1; i++) {
     const md = await auth0Manage.createUser({
-      "name":"test"+Date.now(),
-      "email":"test"+Date.now()+"@test.not",
+      "name":faker.name.findName(),
+      "email":faker.internet.exampleEmail(),
       "connection": "Username-Password-Authentication",
       "password":"Test1337!"
     });
@@ -38,7 +39,7 @@ afterAll( async () => {
 test('get users by email domain with wildcards', async () => {
   var params = {
     search_engine: 'v3',
-    q: 'email:*test.not*'
+    q: 'email:*example*'
   };
   
   await auth0Manage.getUsers(params).then( data => {
