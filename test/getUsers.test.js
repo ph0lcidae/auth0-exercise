@@ -18,7 +18,7 @@ var auth0Manage = new ManagementClient({
 var userIds = [];
 
 beforeAll( async () => {
-  for(let i = 0; i <= 9; i++) {
+  for(let i = 0; i <= 1; i++) {
     const md = await auth0Manage.createUser({
       "name":faker.name.findName(),
       "email":faker.internet.exampleEmail(),
@@ -39,13 +39,14 @@ beforeAll( async () => {
 })
 
 afterAll( async () => {
-  // I don't know why forEach syntax doesn't work here, but it won't pass the array element to deleteUser()
+/*  // I don't know why forEach syntax doesn't work here, but it won't pass the array element to deleteUser()
   for(let i = 0; i < userIds.length; i++) {
     await auth0Manage.deleteUser({ id: userIds[i]});
-  }
+  }*/
 })
 
 test('get users by email domain with wildcards', async () => {
+  // faker.internet.exampleEmail() gives emails with domain example.com or example.net
   var params = {
     search_engine: config.apiVersion,
     q: 'email:*example*'
@@ -56,11 +57,20 @@ test('get users by email domain with wildcards', async () => {
   });
 })
 
-test('get user by multiple fields', () => {
+test('get single user by multiple fields', () => {
   var params = {
     search_engine: config.apiVersion,
     q: 'email:*example*'
   };  
+  // TODO: get by email_verified and user_id
+})
+
+test('get multiple users by multiple fields', () => {
+  var params = {
+    search_engine: config.apiVersion,
+    q: 'email:*example*'
+  };
+  // TODO: get by email_verified and blocked
 })
 
 test('get user by nested property', () => {
@@ -68,6 +78,7 @@ test('get user by nested property', () => {
     search_engine: config.apiVersion,
     q: 'email:*example*'
   };  
+  // TODO: get from identities property 
 })
 
 test('pass query that returns nothing', () => {
@@ -75,27 +86,16 @@ test('pass query that returns nothing', () => {
     search_engine: config.apiVersion,
     q: 'email:*example*'
   };  
+  // TODO: get an empty query
 })
 
-test('get user by nonexistent field', () => {
+test('get user by nonexistent field', async () => {
   var params = {
     search_engine: config.apiVersion,
-    q: 'email:*example*'
-  };  
-})
-
-test('get users by single field', () => {
-  var params = {
-    search_engine: config.apiVersion,
-    q: 'email:*example*'
-  };  
-})
-
-test('get users by multiple fields', () => {
-  var params = {
-    search_engine: config.apiVersion,
-    q: 'email:*example*'
-  };  
+    q: 'for:the horde'
+  };
+  
+  await expect(auth0Manage.getUsers(params)).rejects.toThrow('filter can not be used with unknown field');
 })
 
 test('get user with wrong api version specified', async () => {
@@ -103,14 +103,16 @@ test('get user with wrong api version specified', async () => {
     search_engine: 'v1',
     q: 'name:zelda'
   };
+  
   await expect(auth0Manage.getUsers(params)).rejects.toThrow('You are not allowed to use search_engine=v1.');  
 })
 
-test('get user by creation date range', () => {
+test('get user by login range', () => {
   var params = {
     search_engine: config.apiVersion,
     q: 'email:*example*'
   };  
+  // TODO: get user with login range syntax
 })
 
 test('it handles CJK characters', async () => {
@@ -130,25 +132,30 @@ test('try to send call as POST request', () => {
     search_engine: config.apiVersion,
     q: 'email:*example*'
   };  
+  // TODO: use request to hit bare endpoint
 })
 
 test('sql injection should not work', () => {
   var params = {
     search_engine: config.apiVersion,
     q: 'email:*example*'
-  };  
+  };
+  
+  //TODO: send email that contains sql nonsense
 })
 
 test('get user that was deleted and recreated', () => {
   var params = {
     search_engine: config.apiVersion,
     q: 'email:*example*'
-  };  
+  }; 
+  // TODO: create user, delete, then recreate
 })
 
-test('query should time out after 2 seconds', () => {
+test.skip('query should time out after 2 seconds', () => {
   var params = {
     search_engine: config.apiVersion,
     q: 'email:*example*'
   };  
+  // TODO: unskip when I figure out how to make this work with Jest's timeouts
 })
