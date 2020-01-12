@@ -13,19 +13,35 @@ var auth0Manage = new ManagementClient({
   }
 });
 
-beforeAll(() => {
+// I hate globals but I can't think of a better way to do this
+var userIds = [];
+
+beforeAll( async () => {
+  for(let i = 0; i <= 1; i++) {
+    const md = await auth0Manage.createUser({
+      "name":"test"+i,
+      "email":"test"+i+"@test.not",
+      "connection": "Username-Password-Authentication",
+      "password":"Test1337!"
+    });
+    userIds.push(md.user_id);
+  }
 })
 
-afterAll(() => {
-  
+afterAll( async () => {
+  // I don't know why forEach syntax doesn't work here, but it won't pass the array element to deleteUser()
+  for(let i = 0; i < userIds.length; i++) {
+    const ret = await auth0Manage.deleteUser({ id: userIds[i]});
+  }
 })
 
-test('get users by email domain with wildcards', () => {
+test('get users by email domain with wildcards', async () => {
   var params = {
     search_engine: 'v3',
-    q: 'email:*hyrule*'
+    q: 'email:*test.not*'
   };
-  auth0Manage.getUsers(params).then(data => expect(data.length).toBe(3));
+  const ret = await auth0Manage.getUsers(params);
+  expect(ret.length).toBe(2);
 })
 
 test('get user by multiple fields', () => {

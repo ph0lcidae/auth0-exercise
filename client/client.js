@@ -1,5 +1,5 @@
 const ManagementClient = require('auth0').ManagementClient;
-const config = require('../config/config.js');
+const config = require('../config/config.json');
 
 var auth0Manage = new ManagementClient({
   domain: config.domain,
