@@ -39,10 +39,10 @@ beforeAll( async () => {
 })
 
 afterAll( async () => {
-/*  // I don't know why forEach syntax doesn't work here, but it won't pass the array element to deleteUser()
+// I don't know why forEach syntax doesn't work here, but it won't pass the array element to deleteUser()
   for(let i = 0; i < userIds.length; i++) {
     await auth0Manage.deleteUser({ id: userIds[i]});
-  }*/
+  }
 })
 
 test('get users by email domain with wildcards', async () => {
