@@ -1,0 +1,7 @@
+{
+  "clientID": "your-client-id",
+  "clientSecret": "your-client-secret",
+  "domain": "your-domain",
+  "apiBase": "your-domain/api/v2/",
+  "scope": "read:users update:users"
+}
