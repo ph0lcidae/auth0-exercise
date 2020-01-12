@@ -1,11 +1,20 @@
-const mClient = require('../client/client.js').auth0Manage;
+const ManagementClient = require('auth0').ManagementClient;
+const config = require('../config/config.js');
+var auth0Manage = new ManagementClient({
+  token: config.apiToken,
+  domain: config.domain,
+  scope: 'read:users update:users'
+});
 
 beforeAll(() => {
-  // TODO: create test users
 })
 
 test('get users by email domain with wildcards', () => {
-  
+  var params = {
+    search_engine: 'v3',
+    q: 'email:*hyrule*'
+  };
+  auth0Manage.getUsers(params).then(data => expect(data.length).toBe(3));
 })
 
 test('get user by multiple fields', () => {

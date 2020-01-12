@@ -1,7 +1,7 @@
-const auth0 = require('auth0-js');
+const ManagementClient = require('auth0').ManagementClient;
 const config = require('../config/config.js');
 
-const auth0Manage = new auth0.Management({
+var auth0Manage = new ManagementClient({
   token: config.apiToken,
   domain: config.domain,
   scope: 'read:users update:users'
