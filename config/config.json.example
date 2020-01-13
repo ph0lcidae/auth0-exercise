@@ -1,7 +1,32 @@
 {
-  "clientID": "your-client-id",
-  "clientSecret": "your-client-secret",
-  "domain": "your-domain",
-  "apiBase": "your-domain/api/v2/",
-  "scope": "read:users update:users"
+  "testOptions": {
+    "clientID": your-client-id,
+    "clientSecret": your-client-secret,
+    "domain": your-domain,
+    "apiBase": "https://your.auth0.domain/api/v2/",
+    "scope": "read:users create:users delete:users update:users",
+    "apiVersion": "v3"
+  },
+
+
+  "mClientOptions": {
+    "domain": "your-domain",
+    "clientId": "your-client-id",
+    "clientSecret": "your-client-secret",
+    "scope": "read:users create:users delete:users update:users",
+    "audience": "https://your.auth0.domain/api/v2/",
+    "tokenProvider": {
+      "enableCache": true,
+      "cacheTTLInSeconds": 10
+    }
+  },
+  
+  "authOptions": {
+    "queryBody": {
+      "client_id": "your-client-id",
+      "client_secret": "your-client-secret",
+      "audience": "https://your.auth0.domain/api/v2/",
+      "grant_type": "client_credentials"
+    }
+  }
 }
