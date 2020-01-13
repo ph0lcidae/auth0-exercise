@@ -47,7 +47,6 @@ test('get users by email domain with wildcards', async () => {
   };
   
   await auth0Manage.getUsers(params).then( data => {
-    console.log(data);
     expect(data.length).toBe(2);
     for(let e in data) {
       expect(data[e].email).toContain('example');

@@ -17,6 +17,7 @@ beforeAll( async () => {
       "password":"Test1337!"
     });
     userIds.push(md.user_id);
+    console.log(md);
   }
 })
 
@@ -27,16 +28,17 @@ afterAll( async () => {
   }
 })
 
-test('get user by email with get by id endpoint', () => {
-  
+test('get a single user by id', async () => {
+  await auth0Manage.getUser({ id: userIds[0] }).then( data => {
+    expect(data.length).toBe(1);
+    expect(data[0].user_id).toBe(userIds[0]);
+  })    
 })
 
-test('get multiple users with get by id endpoint', () => {
-  
-})
-
-test('get a nonexistent id', () => {
-  
+test('get a non-id string', async () => {
+  await auth0Manage.getUser("why IS a raven like a writing-desk?").then( data => {
+    expect(data.length).toBe(0);
+  })
 })
 
 test('get an incorrectly formatted id', () => {
@@ -47,12 +49,40 @@ test('get an id from a deleted user', () => {
   
 })
 
-test('try to send call as POST request', () => {
+test('try to send call as POST request', async () => {
   
+  let authOptions = {
+    url: 'https://ph0lcidae.auth0.com/oauth/token',
+    headers: { 'content-type': 'application/json' },
+    body: config.authOptions.queryBody,
+    json: true
+  };
+  
+  let authResp = await request.post(authOptions).then( data => {
+    return data;
+  });
+  let authHeaders = 'Bearer ' + authResp.access_token;
+  
+  let idEndpointUrl = 'https://ph0lcidae.auth0.com/api/v2/users/' + userIds[0]
+  let testOptions = {
+    url: idEndpointUrl,
+    headers: { authorization: authHeaders },
+    body: { "id":userIds[0] },
+    json: true
+  };
+  
+  await request.post(testOptions).catch( e => {
+    // toStrictEqual() is deep equality whereas toBe() is not
+    expect(e.error).toStrictEqual({
+      error: 'Not Found',
+      message: 'Not Found',
+      statusCode: 404
+    });
+  });  
 })
 
 test('sql injection should not work', async () => {
-  await auth0Manage.getUsersById(userIds[0]+'" or ""="').then( data => {
+  await auth0Manage.getUser(userIds[0]+'" or ""="').then( data => {
     // this should just return an empty response
     expect(data.length).toBe(0);
   })  
