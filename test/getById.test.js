@@ -51,8 +51,11 @@ test('try to send call as POST request', () => {
   
 })
 
-test('sql injection should not work', () => {
-  
+test('sql injection should not work', async () => {
+  await auth0Manage.getUsersById(userIds[0]+'" or ""="').then( data => {
+    // this should just return an empty response
+    expect(data.length).toBe(0);
+  })  
 })
 
 test('get by a field that is not id', () => {

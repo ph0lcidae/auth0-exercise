@@ -58,7 +58,3 @@ test('results on same field from different endpoints should be identical when so
 test('sort by nothing/nonsense filter', () => {
   
 })
-
-test('sql injection should not work', () => {
-  
-})
