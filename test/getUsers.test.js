@@ -3,7 +3,6 @@ const config = require('../config/config.json');
 const faker = require('faker');
 const request = require('request-promise');
 const mClient = require('../client/client.js');
-
 const auth0Manage = new mClient(config.mClientOptions);
 
 // I hate globals but I can't think of a better way to do this
@@ -62,7 +61,6 @@ test('get single user by multiple fields', async () => {
     q: query
   };  
   await auth0Manage.getUsers(params).then( data => {
-    console.log(data);
     expect(data.length).toBe(1);
     expect(data[0].user_id).toBe(userIds[0]);
   })
@@ -124,12 +122,24 @@ test('get user with wrong api version specified', async () => {
   await expect(auth0Manage.getUsers(params)).rejects.toThrow('You are not allowed to use search_engine=v1.');  
 })
 
-test('get user by login range', () => {
+test('get users by creation date range', async () => {
+  // I wanted to use login count range but couldn't get the field onto the users
   let params = {
     search_engine: config.testOptions.apiVersion,
-    q: 'email:*example*'
+    q: 'created_at:[2020 TO *]'
   };  
-  // TODO: get user with login range syntax
+  
+  await auth0Manage.getUsers(params).then( data => {
+    expect(data.length).toBe(6);
+    for(let e in data) {
+      let testTime = new Date(data[e].created_at);
+      let year = new Date('2020-01-01T00:00:00');
+      
+      // just checking that users were created after the beginning of the year
+      // it's cheap and crufty and I'd like to refactor this
+      expect(testTime > year).toBeTruthy();
+    }
+  })
 })
 
 test('it handles CJK characters', async () => {
