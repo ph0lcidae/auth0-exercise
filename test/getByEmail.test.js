@@ -8,6 +8,7 @@ const auth0Manage = new mClient(config.mClientOptions);
 // I hate globals but I can't think of a better way to do this
 const userIds = [];
 const emails = [];
+const deletedEmail = faker.internet.exampleEmail();
 
 beforeAll( async () => {
   for(let i = 0; i <= 3; i++) {
@@ -20,6 +21,16 @@ beforeAll( async () => {
     userIds.push(md.user_id);
     emails.push(md.email);
   }
+  
+  const delMd = await auth0Manage.createUser({
+    "name":faker.name.findName(),
+    "email":deletedEmail,
+    "connection": "Username-Password-Authentication",
+    "password": "Test1338!"
+  });
+  
+  await auth0Manage.deleteUser({ id: delMd.user_id });
+  
 // const dupeMd = await auth0Manage.createUser({
 //   "name":faker.name.findName(),
 //   "email":emails[0],
@@ -32,8 +43,8 @@ beforeAll( async () => {
 
 afterAll( async () => {
   // I don't know why forEach syntax doesn't work here, but it won't pass the array element to deleteUser()
-  for(let i = 0; i < userIds.length; i++) {
-    await auth0Manage.deleteUser({ id: userIds[i] });
+  for(let e in userIds) {
+    await auth0Manage.deleteUser({ id: userIds[e] });
   }
 })
 
@@ -69,8 +80,11 @@ test('pass in a nonsense string', async () => {
   await expect(auth0Manage.getUsersByEmail("foolish nephalem")).rejects.toThrow("Object didn't pass validation for format email");
 })
 
-test('get an email from a deleted user', () => {
-  
+test('get an email from a deleted user', async () => {
+  await auth0Manage.getUsersByEmail(deletedEmail).then( data => {
+    // should get an empty response for deleted user
+    expect(data.length).toBe(0);
+  })  
 })
 
 test('try to send call as POST request', () => {

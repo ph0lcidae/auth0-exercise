@@ -30,8 +30,8 @@ beforeAll( async () => {
 })
 
 afterAll( async () => {
-  for(let i in userIds) {
-    await auth0Manage.deleteUser({ id: userIds[i] });
+  for(let e in userIds) {
+    await auth0Manage.deleteUser({ id: userIds[e] });
   }
   
   // alternative: NUKE THE ENTIRE SITE FROM ORBIT

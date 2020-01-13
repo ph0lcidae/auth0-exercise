@@ -22,8 +22,8 @@ beforeAll( async () => {
 
 afterAll( async () => {
   // I don't know why forEach syntax doesn't work here, but it won't pass the array element to deleteUser()
-  for(let i = 0; i < userIds.length; i++) {
-    await auth0Manage.deleteUser({ id: userIds[i] });
+  for(let e in userIds) {
+    await auth0Manage.deleteUser({ id: userIds[e] });
   }
 })
 
@@ -56,8 +56,4 @@ test('sql injection should not work', async () => {
     // this should just return an empty response
     expect(data.length).toBe(0);
   })  
-})
-
-test('get by a field that is not id', () => {
-  
 })
