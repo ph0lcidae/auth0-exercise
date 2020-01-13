@@ -9,7 +9,7 @@ const auth0Manage = new mClient(config.mClientOptions);
 const userIds = [];
 
 beforeAll( async () => {
-  for(let i = 0; i <= 1; i++) {
+  for(let i = 0; i <= 3; i++) {
     const md = await auth0Manage.createUser({
       "name": faker.name.findName(),
       "email": faker.internet.exampleEmail(),
