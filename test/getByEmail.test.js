@@ -87,8 +87,35 @@ test('get an email from a deleted user', async () => {
   })  
 })
 
-test('try to send call as POST request', () => {
+test('try to send call as POST request', async () => {
   
+  let authOptions = {
+    url: 'https://ph0lcidae.auth0.com/oauth/token',
+    headers: { 'content-type': 'application/json' },
+    body: config.authOptions.queryBody,
+    json: true
+  };
+  
+  let authResp = await request.post(authOptions).then( data => {
+    return data;
+  });
+  let authHeaders = 'Bearer ' + authResp.access_token;
+  
+  let testOptions = {
+    url: 'https://ph0lcidae.auth0.com/api/v2/users-by-email/',
+    headers: { authorization: authHeaders },
+    body: { "email":emails[0] },
+    json: true
+  };
+  
+  await request.post(testOptions).catch( e => {
+    // toStrictEqual() is deep equality whereas toBe() is not
+    expect(e.error).toStrictEqual({
+      error: 'Not Found',
+      message: 'Not Found',
+      statusCode: 404
+    });
+  });  
 })
 
 test('sql injection should not work', async () => {
