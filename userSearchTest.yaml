@@ -1,0 +1,28 @@
+config:
+  target: tbd
+  phases:
+    - duration: 1
+      arrivalCount: 1
+  plugins:
+    expect: {}
+  ensure:
+    maxErrorRate: 0
+scenarios:
+  - flow:
+      - get:
+          name: "Search for a user"
+          url: "/users"
+          expect:
+            - contentType: json
+            - statusCode: 200
+            - hasProperty: result
+      - get:
+          name: "Search for a user by email"
+          url: "/users-by-email"
+          expect:
+            statusCode: 200
+      - get:
+          name: "Search for a user by ID"
+          url: "/users"
+          expect:
+            statusCode: 200
