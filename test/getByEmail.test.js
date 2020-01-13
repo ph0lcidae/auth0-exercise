@@ -58,7 +58,7 @@ test('get user by email with get by email endpoint', async () => {
 test.skip('get multiple users with get by email endpoint', async () => {
   // skipped for now because unable to create duplicate email user programmatically
   await auth0Manage.getUsersByEmail(emails[1]).then( data => {
-    //expect(data.length).toBe(2);
+    expect(data.length).toBe(2);
     for(let e in data) {
       expect(data[e].email).toBe(emails[1]);
     }

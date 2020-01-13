@@ -29,14 +29,16 @@ afterAll( async () => {
 })
 
 test('get a single user by id', async () => {
-  await auth0Manage.getUser({ id: userIds[0] }).then( data => {
+  await auth0Manage.getUser(userIds[0]).then( data => {
+    console.log(userIds[0]);
     expect(data.length).toBe(1);
     expect(data[0].user_id).toBe(userIds[0]);
   })    
 })
 
-test('get a non-id string', async () => {
-  await auth0Manage.getUser("why IS a raven like a writing-desk?").then( data => {
+test('get a non-id', async () => {
+  await auth0Manage.getUser().then( data => {
+    console.log(data);
     expect(data.length).toBe(0);
   })
 })
