@@ -1,16 +1,9 @@
 const ManagementClient = require('auth0').ManagementClient;
 const config = require('../config/config.json');
 
-var auth0Manage = new ManagementClient({
-  domain: config.domain,
-  clientId: config.clientID,
-  clientSecret: config.clientSecret,
-  scope: config.scope,
-  audience: config.apiBase,
-  tokenProvider: {
-    enableCache: true,
-    cacheTTLInSeconds: 10
-  }
-});
+function mClient(params) {
+  var auth0Manage = new ManagementClient(config.mClientOptions);
+  return auth0Manage;
+}
 
-module.exports = auth0Manage
+module.exports = mClient

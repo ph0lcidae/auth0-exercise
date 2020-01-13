@@ -8,6 +8,7 @@ config:
   ensure:
     maxErrorRate: 0
 scenarios:
+  # can do light functional testing here as well
   - flow:
       - get:
           name: "Search for a user"

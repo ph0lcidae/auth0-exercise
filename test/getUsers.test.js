@@ -2,20 +2,9 @@ const ManagementClient = require('auth0').ManagementClient;
 const config = require('../config/config.json');
 const faker = require('faker');
 const request = require('request-promise');
+const mClient = require('../client/client.js');
 
-jest.unmock('auth0');
-
-var auth0Manage = new ManagementClient({
-  domain: config.domain,
-  clientId: config.clientID,
-  clientSecret: config.clientSecret,
-  scope: config.scope,
-  audience: config.apiBase,
-  tokenProvider: {
-    enableCache: true,
-    cacheTTLInSeconds: 10
-  }
-});
+var auth0Manage = new mClient(config.mClientOptions);
 
 // I hate globals but I can't think of a better way to do this
 var userIds = [];
@@ -54,7 +43,7 @@ afterAll( async () => {
 test('get users by email domain with wildcards', async () => {
   // faker.internet.exampleEmail() gives emails with domain example.com or example.net
   var params = {
-    search_engine: config.apiVersion,
+    search_engine: config.testOptions.apiVersion,
     q: 'email:*example*'
   };
   
@@ -66,33 +55,50 @@ test('get users by email domain with wildcards', async () => {
   });
 })
 
-test('get single user by multiple fields', () => {
+test('get single user by multiple fields', async () => {
+  var query = 'user_id:"' + userIds[0] + '" AND email_verified:"false"';
   var params = {
-    search_engine: config.apiVersion,
-    q: 'email:*example*'
+    search_engine: config.testOptions.apiVersion,
+    q: query
   };  
-  // TODO: get by email_verified and user_id
+  await auth0Manage.getUsers(params).then( data => {
+    console.log(data);
+    expect(data.length).toBe(1);
+    expect(data[0].user_id).toBe(userIds[0]);
+  })
 })
 
-test('get multiple users by multiple fields', () => {
+test('get multiple users by multiple fields', async () => {
   var params = {
-    search_engine: config.apiVersion,
-    q: 'email:*example*'
+    search_engine: config.testOptions.apiVersion,
+    q: 'email_verified:"false" AND email:*example*'
   };
-  // TODO: get by email_verified and blocked
+  await auth0Manage.getUsers(params).then( data => {
+    expect(data.length).toBe(2);
+    for(let e in data) {
+      expect(data[e].email).toContain('example');
+      expect(data[e].email_verified).toBeFalsy();
+    }
+  })
 })
 
-test('get user by nested property', () => {
+test('get user by nested property', async () => {
   var params = {
-    search_engine: config.apiVersion,
-    q: 'email:*example*'
-  };  
-  // TODO: get from identities property 
+    search_engine: config.testOptions.apiVersion,
+    q: 'identities.provider:auth0'
+  };
+  
+  await auth0Manage.getUsers(params).then( data => {
+    expect(data.length).toBe(6);
+    for(let e in data) {
+      expect(data[e].identities[0].provider).toBe("auth0");
+    }
+  })  
 })
 
 test('pass query that returns nothing', async () => {
   var params = {
-    search_engine: config.apiVersion,
+    search_engine: config.testOptions.apiVersion,
     q: 'email:foo'
   };  
   await auth0Manage.getUsers(params).then( data => {
@@ -102,7 +108,7 @@ test('pass query that returns nothing', async () => {
 
 test('get user by nonexistent field', async () => {
   var params = {
-    search_engine: config.apiVersion,
+    search_engine: config.testOptions.apiVersion,
     q: 'for:the horde'
   };
   
@@ -120,7 +126,7 @@ test('get user with wrong api version specified', async () => {
 
 test('get user by login range', () => {
   var params = {
-    search_engine: config.apiVersion,
+    search_engine: config.testOptions.apiVersion,
     q: 'email:*example*'
   };  
   // TODO: get user with login range syntax
@@ -128,7 +134,7 @@ test('get user by login range', () => {
 
 test('it handles CJK characters', async () => {
   var params = {
-    search_engine: config.apiVersion,
+    search_engine: config.testOptions.apiVersion,
     q: 'email:面条@玉米片.com'
   };
   
@@ -141,32 +147,39 @@ test('it handles CJK characters', async () => {
 
 test('try to send call as POST request', async () => {
   
-//   var authBody = JSON.stringify(`{"client_id":${config.clientID},"client_secret":${config.clientSecret},"audience":${config.apiBase},"grant_type":"client_credentials"}`)
-//   var authOptions = { method: 'POST',
-//   url: 'https://ph0lcidae.auth0.com/oauth/token',
-//   headers: { 'content-type': 'application/json' },
-//   body: authBody
-//   };
+  // it is the year twenty twenty and we still can't use template literals in JSON 
+  var authOptions = {
+    url: 'https://ph0lcidae.auth0.com/oauth/token',
+    headers: { 'content-type': 'application/json' },
+    body: config.authOptions.queryBody,
+    json: true
+  };
   
-//   var authResp = await request(authOptions);
+  var authResp = await request.post(authOptions).then( data => {
+    return data;
+  });
+  var authHeaders = 'Bearer ' + authResp.access_token;
   
-//   var testOptions = {
-//     method: 'POST',
-//     url: `${config.apiBase}`,
-//     qs: {q: 'email:*example*', search_engine: config.apiVersion },
-//     headers: {authorization: `Bearer ${authResp.access_token}` }
-//   };
+  var testOptions = {
+    url: 'https://ph0lcidae.auth0.com/api/v2/users/',
+    headers: { authorization: authHeaders },
+    body: {"q": 'email:*example*', "search_engine": config.testOptions.apiVersion },
+    json: true
+  };
   
-//   await request(testOptions).catch( e => {
-//     expect(e).toBe({
-//       error: "invalid json"
-//     })
-//   });
+  await request.post(testOptions).catch( e => {
+    // toStrictEqual() is deep equality whereas toBe() is not
+    expect(e.error).toStrictEqual({
+      error: 'Not Found',
+      message: 'Not Found',
+      statusCode: 404
+    });
+  }); 
 })
 
 test('sql injection should not work', async () => {
   var params = {
-    search_engine: config.apiVersion,
+    search_engine: config.testOptions.apiVersion,
     q: 'email:" or ""="'
   };
   await auth0Manage.getUsers(params).then( data => {
@@ -177,7 +190,7 @@ test('sql injection should not work', async () => {
 
 test.skip('query should time out after 2 seconds', () => {
   var params = {
-    search_engine: config.apiVersion,
+    search_engine: config.testOptions.apiVersion,
     q: 'email:*example*'
   };  
   // TODO: unskip when I figure out how to make this work with Jest's timeouts
