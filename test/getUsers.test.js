@@ -4,10 +4,10 @@ const faker = require('faker');
 const request = require('request-promise');
 const mClient = require('../client/client.js');
 
-var auth0Manage = new mClient(config.mClientOptions);
+const auth0Manage = new mClient(config.mClientOptions);
 
 // I hate globals but I can't think of a better way to do this
-var userIds = [];
+const userIds = [];
 
 beforeAll( async () => {
   for(let i = 0; i <= 1; i++) {
@@ -42,7 +42,7 @@ afterAll( async () => {
 
 test('get users by email domain with wildcards', async () => {
   // faker.internet.exampleEmail() gives emails with domain example.com or example.net
-  var params = {
+  let params = {
     search_engine: config.testOptions.apiVersion,
     q: 'email:*example*'
   };
@@ -56,8 +56,8 @@ test('get users by email domain with wildcards', async () => {
 })
 
 test('get single user by multiple fields', async () => {
-  var query = 'user_id:"' + userIds[0] + '" AND email_verified:"false"';
-  var params = {
+  let query = 'user_id:"' + userIds[0] + '" AND email_verified:"false"';
+  let params = {
     search_engine: config.testOptions.apiVersion,
     q: query
   };  
@@ -69,7 +69,7 @@ test('get single user by multiple fields', async () => {
 })
 
 test('get multiple users by multiple fields', async () => {
-  var params = {
+  let params = {
     search_engine: config.testOptions.apiVersion,
     q: 'email_verified:"false" AND email:*example*'
   };
@@ -83,7 +83,7 @@ test('get multiple users by multiple fields', async () => {
 })
 
 test('get user by nested property', async () => {
-  var params = {
+  let params = {
     search_engine: config.testOptions.apiVersion,
     q: 'identities.provider:auth0'
   };
@@ -97,7 +97,7 @@ test('get user by nested property', async () => {
 })
 
 test('pass query that returns nothing', async () => {
-  var params = {
+  let params = {
     search_engine: config.testOptions.apiVersion,
     q: 'email:foo'
   };  
@@ -107,7 +107,7 @@ test('pass query that returns nothing', async () => {
 })
 
 test('get user by nonexistent field', async () => {
-  var params = {
+  let params = {
     search_engine: config.testOptions.apiVersion,
     q: 'for:the horde'
   };
@@ -116,7 +116,7 @@ test('get user by nonexistent field', async () => {
 })
 
 test('get user with wrong api version specified', async () => {
-  var params = {
+  let params = {
     search_engine: 'v1',
     q: 'name:zelda'
   };
@@ -125,7 +125,7 @@ test('get user with wrong api version specified', async () => {
 })
 
 test('get user by login range', () => {
-  var params = {
+  let params = {
     search_engine: config.testOptions.apiVersion,
     q: 'email:*example*'
   };  
@@ -133,7 +133,7 @@ test('get user by login range', () => {
 })
 
 test('it handles CJK characters', async () => {
-  var params = {
+  let params = {
     search_engine: config.testOptions.apiVersion,
     q: 'email:面条@玉米片.com'
   };
@@ -148,19 +148,19 @@ test('it handles CJK characters', async () => {
 test('try to send call as POST request', async () => {
   
   // it is the year twenty twenty and we still can't use template literals in JSON 
-  var authOptions = {
+  let authOptions = {
     url: 'https://ph0lcidae.auth0.com/oauth/token',
     headers: { 'content-type': 'application/json' },
     body: config.authOptions.queryBody,
     json: true
   };
   
-  var authResp = await request.post(authOptions).then( data => {
+  let authResp = await request.post(authOptions).then( data => {
     return data;
   });
-  var authHeaders = 'Bearer ' + authResp.access_token;
+  let authHeaders = 'Bearer ' + authResp.access_token;
   
-  var testOptions = {
+  let testOptions = {
     url: 'https://ph0lcidae.auth0.com/api/v2/users/',
     headers: { authorization: authHeaders },
     body: {"q": 'email:*example*', "search_engine": config.testOptions.apiVersion },
@@ -178,7 +178,7 @@ test('try to send call as POST request', async () => {
 })
 
 test('sql injection should not work', async () => {
-  var params = {
+  let params = {
     search_engine: config.testOptions.apiVersion,
     q: 'email:" or ""="'
   };
@@ -189,7 +189,7 @@ test('sql injection should not work', async () => {
 })
 
 test.skip('query should time out after 2 seconds', () => {
-  var params = {
+  let params = {
     search_engine: config.testOptions.apiVersion,
     q: 'email:*example*'
   };  
