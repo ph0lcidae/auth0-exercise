@@ -3,6 +3,8 @@ const config = require('../config/config.json');
 const faker = require('faker');
 const request = require('request-promise');
 
+jest.unmock('auth0');
+
 var auth0Manage = new ManagementClient({
   domain: config.domain,
   clientId: config.clientID,
@@ -171,14 +173,6 @@ test('sql injection should not work', async () => {
     // this should just return an empty response
     expect(data.length).toBe(0);
   })
-})
-
-test('get user that was deleted and recreated', () => {
-  var params = {
-    search_engine: config.apiVersion,
-    q: 'email:*example*'
-  }; 
-  // TODO: create user, delete, then recreate
 })
 
 test.skip('query should time out after 2 seconds', () => {

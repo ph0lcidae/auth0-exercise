@@ -2,7 +2,7 @@ const ManagementClient = require('auth0').ManagementClient;
 const config = require('../config/config.json');
 const faker = require('faker');
 
-var auth0Manage = new ManagementClient({
+var auth0Manage = ManagementClient({
   domain: config.domain,
   clientId: config.clientID,
   clientSecret: config.clientSecret,

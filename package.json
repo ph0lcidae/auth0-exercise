@@ -21,6 +21,7 @@
   "homepage": "https://github.com/ph0lcidae/auth0-exercise#readme",
   "devDependencies": {},
   "dependencies": {
+    "artillery": "^1.6.0-29",
     "auth0": "^2.20.0",
     "auth0-js": "^9.12.1",
     "faker": "^4.1.0",

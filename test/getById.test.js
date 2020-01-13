@@ -64,10 +64,6 @@ test('sql injection should not work', () => {
   
 })
 
-test('get user by id that was deleted and recreated', () => {
-  
-})
-
 test('get by a field that is not id', () => {
   
 })
