@@ -10,7 +10,8 @@ Export is excluded for the sake of not having to fiddle with file I/O. Soak test
 I've used Jest as a testing framework here on top of node.js; I chose it over Mocha just due to ease of setup and running, as well as robust feature set. (It's great.)
 
 # Setup & Running
-The project depends on the node packages `jest`, `auth0`, `auth0-js`, and `request`.
+The project depends on the node packages `jest`, `auth0`, `auth0-js`, `faker`, `request-promise`, and `request`. 
+`artillery` and `artillery-plugin-expect` are also included but not required to run Jest tests, however both are required to run Artillery tests.
 An example config is provided; I will provide the real config separately.
 
 In the project directory, run:
@@ -18,14 +19,14 @@ In the project directory, run:
 to run all test suites. 
 
 For more detail, run:
-`npm run test -- --verbose`
+`npm run test -- -i --verbose --testTimeout 10000`
 
 Run a specific test file with the following:
-`npm run test -- -t getById`
+`npm run test -- -t getById --testTimeout 10000`
 or replace getById with the test file you wish to run.
 
 If you'd like to run a single test case:
-`npm run test -- -t "get a nonexistent id"`
+`npm run test -- -t "get a nonexistent id" --testTimeout 10000`
 or replace with the test descriptor you'd like to run. Note that this will run all the tests with such a description regardless of the file.
 
 # TODOs and Improvements

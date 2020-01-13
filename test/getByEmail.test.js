@@ -1,18 +1,9 @@
 const ManagementClient = require('auth0').ManagementClient;
 const config = require('../config/config.json');
 const faker = require('faker');
-
-var auth0Manage = new ManagementClient({
-  domain: config.domain,
-  clientId: config.clientID,
-  clientSecret: config.clientSecret,
-  scope: config.scope,
-  audience: config.apiBase,
-  tokenProvider: {
-    enableCache: true,
-    cacheTTLInSeconds: 10
-  }
-});
+const request = require('request-promise');
+const mClient = require('../client/client.js');
+const auth0Manage = new mClient(config.mClientOptions);
 
 // I hate globals but I can't think of a better way to do this
 var userIds = [];
