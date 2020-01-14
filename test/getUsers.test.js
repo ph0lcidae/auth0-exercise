@@ -204,7 +204,7 @@ describe('search results functional tests', () => {
       q: 'email:" or ""="'
     };
     await auth0Manage.getUsers(params).then(data => {
-      // this should just return an empty response
+      // this should return an empty response
       expect(data.length).toBe(0);
     })
   });
