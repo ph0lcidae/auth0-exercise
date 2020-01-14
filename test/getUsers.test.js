@@ -120,7 +120,7 @@ describe('search results functional tests', () => {
   test('get user with wrong api version specified', async () => {
     let params = {
       search_engine: 'v1',
-      q: 'name:zelda'
+      q: 'username:zelda'
     };
 
     await expect(auth0Manage.getUsers(params)).rejects.toThrow('You are not allowed to use search_engine=v1.');
