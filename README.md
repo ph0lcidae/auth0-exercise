@@ -4,7 +4,7 @@ Technical exercise for Auth0's User Search API.
 # Scope
 This test suite exercises the Auth0 User Search API, including the get users endpoint, get users by email, and get users by ID. It also exercises viewing results by page and sorting. 
 This test suite does not examine anything UI-related. Perf/load tests are mocked for the purposes of the exercise due to processing and time constraints but are included as proof of concept.
-Export is excluded for the sake of not having to fiddle with file I/O. Soak testing is also excluded due to lack of time (Jest has unfortunately not implemented a time machine yet).
+Export is excluded for lack of computing resources (my IDE and test env are running in a Docker container). Soak testing is also excluded due to lack of time (Jest has unfortunately not implemented a time machine yet).
 
 # Tools
 I've used Jest as a testing framework here on top of node.js; I chose it over Mocha just due to ease of setup and running, as well as robust feature set. (It's great.)
@@ -18,16 +18,23 @@ In the project directory, run:
 `npm run test -- -i --testTimeout 10000` 
 to run all test suites. 
 
-For more detail, run:
+`jest.config.js` specifies running verbosely by default, however if you would prefer not to have that, just remove it from the config.
+
+For more detail manually, run:
 `npm run test -- -i --verbose --testTimeout 10000`
 
 Run a specific test file with the following:
-`npm run test -- -t getById --testTimeout 10000`
+`npm run test -- getById --testTimeout 10000`
 or replace getById with the test file you wish to run.
 
 If you'd like to run a single test case:
 `npm run test -- -t "get a nonexistent id" --testTimeout 10000`
 or replace with the test descriptor you'd like to run. Note that this will run all the tests with such a description regardless of the file.
+
+# Adding Tests
+You may add tests in any file with the `test('description', () => {});` Jest syntax. I advise using async/await as the other tests do (eg, `test('description', async () => {});` and functions requiring Jest to wait for a response written as `await function()`.)
+
+New test files should be placed under the `test/` directory and named as `{name}.test.js`, otherwise Jest won't pick them up.
 
 # TODOs and Improvements
 
