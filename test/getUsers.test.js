@@ -8,32 +8,34 @@ const auth0Manage = new mClient(config.mClientOptions);
 // I hate globals but I can't think of a better way to do this
 const userIds = [];
 
-beforeAll( async () => {
-  for(let i = 0; i <= 3; i++) {
+beforeAll(async () => {
+  for (let i = 0; i <= 3; i++) {
     const md = await auth0Manage.createUser({
       "name": faker.name.findName(),
       "email": faker.internet.exampleEmail(),
       "connection": "Username-Password-Authentication",
-      "password":"Test1337!"
+      "password": "Test1337!"
     });
     userIds.push(md.user_id);
   }
-  
+
   // for CJK locale test
   const cjkMd = await auth0Manage.createUser({
-    "name":"墨镜",
-    "email":"面条@玉米片.com",
+    "name": "墨镜",
+    "email": "面条@玉米片.com",
     "connection": "Username-Password-Authentication",
-    "password":"Test1338!"
+    "password": "Test1338!"
   });
   userIds.push(cjkMd.user_id);
 });
 
-afterAll( async () => {
-  for(let e in userIds) {
-    await auth0Manage.deleteUser({ id: userIds[e] });
+afterAll(async () => {
+  for (let e in userIds) {
+    await auth0Manage.deleteUser({
+      id: userIds[e]
+    });
   }
-  
+
   // alternative: NUKE THE ENTIRE SITE FROM ORBIT
   // (it's the only way to be sure)
   // await auth0Manage.deleteAllUsers();
@@ -48,7 +50,7 @@ describe('search results functional tests', () => {
     };
 
     await auth0Manage.getUsers(params).then(data => {
-      expect(data.length).toBe(2);
+      expect(data.length).toBe(4);
       for (let e in data) {
         expect(data[e].email).toContain('example');
       }
@@ -73,7 +75,7 @@ describe('search results functional tests', () => {
       q: 'email_verified:"false" AND email:*example*'
     };
     await auth0Manage.getUsers(params).then(data => {
-      expect(data.length).toBe(2);
+      expect(data.length).toBe(4);
       for (let e in data) {
         expect(data[e].email).toContain('example');
         expect(data[e].email_verified).toBeFalsy();
@@ -88,7 +90,7 @@ describe('search results functional tests', () => {
     };
 
     await auth0Manage.getUsers(params).then(data => {
-      expect(data.length).toBe(6);
+      expect(data.length).toBe(8);
       for (let e in data) {
         expect(data[e].identities[0].provider).toBe("auth0");
       }
@@ -131,7 +133,7 @@ describe('search results functional tests', () => {
     };
 
     await auth0Manage.getUsers(params).then(data => {
-      expect(data.length).toBe(6);
+      expect(data.length).toBe(8);
       for (let e in data) {
         let testTime = new Date(data[e].created_at);
         let year = new Date('2020-01-01T00:00:00');
@@ -239,5 +241,40 @@ describe('view search result tests', () => {
 
   test('view search results with totals included', () => {
 
-  })
+  });
+});
+
+describe('sort search results tests', () => {
+  
+  test('sort search results ascending', () => {
+
+  });
+
+  test('sort search results descending', () => {
+
+  });
+
+  test('sort by numeric field', () => {
+
+  });
+
+  test('sort by alphabetical field', () => {
+
+  });
+
+  test('sort empty search results', () => {
+
+  });
+
+  test('sort search results containing non-alphanumerics', () => {
+
+  });
+
+  test('results on same field from different endpoints should be identical when sorted', () => {
+
+  });
+
+  test('sort by nothing/nonsense filter', () => {
+
+  });
 });
