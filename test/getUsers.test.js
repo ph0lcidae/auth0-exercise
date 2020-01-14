@@ -27,6 +27,7 @@ beforeAll(async () => {
     "password": "Test1338!"
   });
   userIds.push(cjkMd.user_id);
+
 });
 
 afterAll(async () => {
@@ -245,36 +246,121 @@ describe('view search result tests', () => {
 });
 
 describe('sort search results tests', () => {
-  
-  test('sort search results ascending', () => {
 
+  test('sort search results ascending', async () => {
+    let params = {
+      search_engine: config.testOptions.apiVersion,
+      q: 'email:*example*',
+      sort: 'created_at:1'
+    };
+
+    await auth0Manage.getUsers(params).then(data => {
+      expect(data.length).toBe(4);
+
+      let topTime = new Date(data[0].created_at);
+      let bottomTime = new Date(data[data.length - 1].created_at);
+      expect(topTime < bottomTime).toBeTruthy();
+    });
   });
 
-  test('sort search results descending', () => {
+  test('sort search results descending', async () => {
+    let params = {
+      search_engine: config.testOptions.apiVersion,
+      q: 'email:*example*',
+      sort: 'created_at:-1'
+    };
 
+    await auth0Manage.getUsers(params).then(data => {
+      expect(data.length).toBe(4);
+
+      let topTime = new Date(data[0].created_at);
+      let bottomTime = new Date(data[data.length - 1].created_at);
+      expect(topTime > bottomTime).toBeTruthy();
+    });
   });
 
-  test('sort by numeric field', () => {
+  test.skip('sort by numeric field', async () => {
+    // can't get numerical field
+    let params = {
+      search_engine: config.testOptions.apiVersion,
+      q: 'email:*example*',
+      sort: 'logins_count:-1',
+      fields: 'logins_count'
+    };
 
+    await auth0Manage.getUsers(params).then(data => {
+      expect(data.length).toBe(4);
+      expect(data[0].logins_count >= data[data.length - 1].logins_count).toBeTruthy();
+    });
   });
 
-  test('sort by alphabetical field', () => {
+  test('sort by alphabetical field', async () => {
+    let params = {
+      search_engine: config.testOptions.apiVersion,
+      q: 'email:*example*',
+      sort: 'name:1'
+    };
 
+    await auth0Manage.getUsers(params).then(data => {
+      expect(data.length).toBe(4);
+
+      for (let e in data) {
+        if (e > 0) {
+          // js compare strings in dictionary order
+          // faker only produces names beginning with capital letters
+          expect(data[e].name >= data[e - 1].name).toBeTruthy();
+        }
+      }
+    });
   });
 
-  test('sort empty search results', () => {
+  test('sort empty search results', async () => {
+    let params = {
+      search_engine: config.testOptions.apiVersion,
+      q: 'email:tyrael@highheavens.org',
+      sort: 'name:1'
+    };
 
+    await auth0Manage.getUsers(params).then(data => {
+      // should return nothing ... sorted
+      expect(data.length).toBe(0);
+    });
   });
 
-  test('sort search results containing non-alphanumerics', () => {
+  test('sort search results containing non-alphanumerics', async () => {
+    let params = {
+      search_engine: config.testOptions.apiVersion,
+      q: 'email:*example*',
+      sort: 'identities:1'
+    };
 
+    await auth0Manage.getUsers(params).then(data => {
+      expect(data.length).toBe(4);
+      // TODO: figure out a better way to do this; it doesn't appear to sort by anything
+      // at any rate, it shouldn't work as I understand it 
+      expect(data[0].identities > data[1].identities).toBeFalsy();
+    });
   });
 
   test('results on same field from different endpoints should be identical when sorted', () => {
 
   });
 
-  test('sort by nothing/nonsense filter', () => {
+  test('sort by nonexistent field', async () => {
+    let params = {
+      search_engine: config.testOptions.apiVersion,
+      q: 'email:*example*',
+      sort: 'cheesy_variable_names:1'
+    };
 
+    await auth0Manage.getUsers(params).then(data => {
+      // if sortation field is invalid
+      // returns results sorted by creation date in reverse order
+      expect(data.length).toBe(4);
+
+      let topTime = new Date(data[0].created_at);
+      let bottomTime = new Date(data[data.length - 1].created_at);
+      expect(topTime > bottomTime).toBeTruthy();
+    });
   });
 });

@@ -47,10 +47,6 @@ test('get an incorrectly formatted id', () => {
   
 })
 
-test('get an id from a deleted user', () => {
-  
-})
-
 test('try to send call as POST request', async () => {
   
   let authOptions = {
