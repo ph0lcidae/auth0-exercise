@@ -38,7 +38,7 @@ beforeAll( async () => {
 //   "password": "Test1337Again!"
 // });
 // userIds.push(dupeMd.user_id);
-}) 
+}); 
 
 
 afterAll( async () => {
@@ -46,14 +46,14 @@ afterAll( async () => {
   for(let e in userIds) {
     await auth0Manage.deleteUser({ id: userIds[e] });
   }
-})
+});
 
 test('get user by email with get by email endpoint', async () => {
   await auth0Manage.getUsersByEmail(emails[0]).then( data => {
     expect(data.length).toBe(1);
     expect(data[0].email).toBe(emails[0]);
-  })    
-})
+  });    
+});
 
 test.skip('get multiple users with get by email endpoint', async () => {
   // skipped for now because unable to create duplicate email user programmatically
@@ -62,30 +62,30 @@ test.skip('get multiple users with get by email endpoint', async () => {
     for(let e in data) {
       expect(data[e].email).toBe(emails[1]);
     }
-  })   
-})
+  }); 
+});
 
 test('get a nonexistent email', async () => {
   await auth0Manage.getUsersByEmail("anduin@thealliance.gov").then( data => {
     // should get an empty response
     expect(data.length).toBe(0);
-  })
-})
+  });
+});
 
 test('get an incorrectly formatted email', async () => {
   await expect(auth0Manage.getUsersByEmail("loktar@ogar")).rejects.toThrow("Object didn't pass validation for format email");
-})
+});
 
 test('pass in a nonsense string', async () => {
   await expect(auth0Manage.getUsersByEmail("foolish nephalem")).rejects.toThrow("Object didn't pass validation for format email");
-})
+});
 
 test('get an email from a deleted user', async () => {
   await auth0Manage.getUsersByEmail(deletedEmail).then( data => {
     // should get an empty response for deleted user
     expect(data.length).toBe(0);
-  })  
-})
+  });  
+});
 
 test('try to send call as POST request', async () => {
   
@@ -116,7 +116,7 @@ test('try to send call as POST request', async () => {
       statusCode: 404
     });
   });  
-})
+});
 
 test('sql injection should not work', async () => {
   let params = {
@@ -126,5 +126,5 @@ test('sql injection should not work', async () => {
   await auth0Manage.getUsers(params).then( data => {
     // this should just return an empty response
     expect(data.length).toBe(0);
-  })   
-})
+  });   
+});

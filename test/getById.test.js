@@ -19,33 +19,27 @@ beforeAll( async () => {
     userIds.push(md.user_id);
     console.log(md);
   }
-})
+});
 
 afterAll( async () => {
-  // I don't know why forEach syntax doesn't work here, but it won't pass the array element to deleteUser()
   for(let e in userIds) {
     await auth0Manage.deleteUser({ id: userIds[e] });
   }
-})
+});
 
 test('get a single user by id', async () => {
   await auth0Manage.getUser(userIds[0]).then( data => {
-    console.log(userIds[0]);
     expect(data.length).toBe(1);
     expect(data[0].user_id).toBe(userIds[0]);
-  })    
-})
+  });    
+});
 
-test('get a non-id', async () => {
-  await auth0Manage.getUser().then( data => {
-    console.log(data);
-    expect(data.length).toBe(0);
-  })
-})
-
-test('get an incorrectly formatted id', () => {
-  
-})
+test('get a string that is not an id', async () => {
+  await auth0Manage.getUser("remember the sunwell").then( data => {
+    // should return all users in tenant
+    expect(data.length).toBe(5);
+  });
+});
 
 test('try to send call as POST request', async () => {
   
@@ -77,11 +71,11 @@ test('try to send call as POST request', async () => {
       statusCode: 404
     });
   });  
-})
+});
 
-test('sql injection should not work', async () => {
-  await auth0Manage.getUser(userIds[0]+'" or ""="').then( data => {
-    // this should just return an empty response
-    expect(data.length).toBe(0);
-  })  
-})
+test('malicious code injection should not work', async () => {
+  await auth0Manage.getUser(userIds[0]+' ; alert("oh hai");').then( data => {
+    // this should also just return all users in the tenant
+    expect(data.length).toBe(5);
+  });  
+});
