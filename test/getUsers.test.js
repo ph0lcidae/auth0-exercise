@@ -220,28 +220,80 @@ describe('search results functional tests', () => {
 
 describe('view search result tests', () => {
 
-  test('view search results by page number', () => {
-
+  test('view search results by page number', async () => {
+    let params = {
+      search_engine: config.testOptions.apiVersion,
+      q: 'email:*example*',
+      page: '0',
+      per_page: '2'
+    };
+    await auth0Manage.getUsers(params).then(data => {
+      expect(data.length).toBe(2);
+    })
   });
 
-  test('view search results by nonexistent page number', () => {
-
+  test('view search results by nonexistent page number', async () => {
+    let params = {
+      search_engine: config.testOptions.apiVersion,
+      q: 'email:*example*',
+      page: '7',
+      per_page: '2'
+    };
+    await auth0Manage.getUsers(params).then(data => {
+      // this should just return an empty response
+      expect(data.length).toBe(0);
+    })
   });
 
-  test('view search results with 0 users per page', () => {
-
+  test('view search results with 0 users per page', async () => {
+    let params = {
+      search_engine: config.testOptions.apiVersion,
+      q: 'email:*example*',
+      page: '0',
+      per_page: '0'
+    };
+    await auth0Manage.getUsers(params).then(data => {
+      // this should just return an empty response
+      expect(data.length).toBe(0);
+    })
   });
 
-  test('view search results with 5 users per page', () => {
-
+  test('view search results with 5 users per page', async () => {
+    let params = {
+      search_engine: config.testOptions.apiVersion,
+      q: 'email:*example*',
+      page: '0',
+      per_page: '5'
+    };
+    await auth0Manage.getUsers(params).then(data => {
+      // this should return 4 users, results need not fill a page exactly
+      expect(data.length).toBe(4);
+    })
   });
 
-  test('view search results with 5000 users per page', () => {
-
+  test('view search results with 50000000 users per page', async () => {
+    let params = {
+      search_engine: config.testOptions.apiVersion,
+      q: 'email:*example*',
+      page: '0',
+      per_page: '50000000'
+    };
+    await expect(auth0Manage.getUsers(params)).rejects.toThrow('Query validation error');
   });
 
-  test('view search results with totals included', () => {
-
+  test('view search results with totals included', async () => {
+    let params = {
+      search_engine: config.testOptions.apiVersion,
+      q: 'email:*example*',
+      page: '0',
+      per_page: '5',
+      include_totals: 'true'
+    };
+    await auth0Manage.getUsers(params).then(data => {
+      // only one page of data here
+      // TODO: make this more resistant to changing number of users in tenant
+      expect(data.total).toBeLessThanOrEqual(5);
+    })
   });
 });
 
