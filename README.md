@@ -3,7 +3,7 @@ Technical exercise for Auth0's User Search API.
 
 # Scope
 This test suite exercises the Auth0 User Search API, including the get users endpoint, get users by email, and get users by ID. It also exercises viewing results by page and sorting. 
-This test suite does not examine anything UI-related. Perf/load tests are mocked for the purposes of the exercise due to processing and time constraints but are included as proof of concept.
+This test suite does not examine anything UI-related. Artillery perf/load tests are mocked for the purposes of the exercise due to processing and time constraints but are included as proof of concept.
 Export is excluded for lack of computing resources (my IDE and test env are running in a Docker container). Soak testing is also excluded due to lack of time (Jest has unfortunately not implemented a time machine yet).
 
 # Tools
@@ -38,8 +38,9 @@ New test files should be placed under the `test/` directory and named as `{name}
 
 # TODOs and Improvements
 
-Given more time, I'd refactor these to reduce duplication. As it is, I wanted to err on the side of making the test cases for each suite clear; in a day-to-day environment I would write them a bit more concisely.
-I'd also like to review them for JavaScript best practices, though I imagine that would come out in a code review.
+Given more time, I'd refactor these to reduce duplication. As it is, I wanted to err on the side of making the test cases for each suite clear; in a day-to-day environment I would write them a bit more concisely and abstract more logic.
+I'd like to review them for JavaScript best practices, though I imagine that would come out in a code review. 
+I'd also like to test the API endpoints themselves a bit more and possibly write a few tests comparing the endpoint response via `request` vs. the response from the SDK to detect inconsistencies early, as well as dig deeper into the endpoints' sending proper response codes.
 
 I'd also like to refactor to speed the tests up -- the extended timeout and sequential running are timing issues relating to test account creation and the way Jest runs under the hood. I don't understand the latter as well as I'd like and would be able to make it more elegant given more time.
 
