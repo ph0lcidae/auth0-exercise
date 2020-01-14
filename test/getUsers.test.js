@@ -91,7 +91,7 @@ describe('search results functional tests', () => {
     };
 
     await auth0Manage.getUsers(params).then(data => {
-      expect(data.length).toBe(8);
+      expect(data.length).toBe(5);
       for (let e in data) {
         expect(data[e].identities[0].provider).toBe("auth0");
       }
@@ -134,7 +134,7 @@ describe('search results functional tests', () => {
     };
 
     await auth0Manage.getUsers(params).then(data => {
-      expect(data.length).toBe(8);
+      expect(data.length).toBe(5);
       for (let e in data) {
         let testTime = new Date(data[e].created_at);
         let year = new Date('2020-01-01T00:00:00');
