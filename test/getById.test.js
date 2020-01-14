@@ -17,7 +17,6 @@ beforeAll( async () => {
       "password":"Test1337!"
     });
     userIds.push(md.user_id);
-    console.log(md);
   }
 });
 
