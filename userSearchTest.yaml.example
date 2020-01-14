@@ -1,0 +1,38 @@
+config:
+  target: '{your-auth0-url}'
+  phases:
+    - duration: 60
+      arrivalCount: 20
+  defaults:
+    headers: 'Bearer {your-token}'
+  plugins:
+    expect: {}
+  ensure:
+    maxErrorRate: 0
+scenarios:
+  # can do light functional testing here as well
+  - flow:
+      - get:
+          name: "Search for a user"
+          url: "/users?q=name%3A{your-name}&search_engine=v3"
+          capture:
+            - json: $.get_users_response.0.email 
+              as: email
+          expect:
+            - contentType: json
+            - statusCode: 200
+            - equals:
+              - "{{ email }}"
+              - '{your-email}'
+      - get:
+          name: "Search for a user by email"
+          url: "/users-by-email/email=%3A{your-email}&search_engine=v3"
+          capture: 
+            - json: $.get_users-by-email_response.0.name 
+              as: name
+          expect:
+            - contentType: json
+            - statusCode: 200
+            - equals:
+              - "{{ name }}"
+              - '{your-name}'
