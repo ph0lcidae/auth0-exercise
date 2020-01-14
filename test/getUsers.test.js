@@ -342,10 +342,6 @@ describe('sort search results tests', () => {
     });
   });
 
-  test('results on same field from different endpoints should be identical when sorted', () => {
-
-  });
-
   test('sort by nonexistent field', async () => {
     let params = {
       search_engine: config.testOptions.apiVersion,
