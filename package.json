@@ -23,7 +23,7 @@
   "dependencies": {
     "artillery": "^1.6.0-29",
     "artillery-plugin-expect": "^1.2.1",
-    "auth0": "^2.20.0",
+    "auth0": "^2.27.1",
     "auth0-js": "^9.12.1",
     "faker": "^4.1.0",
     "jest": "^24.9.0",
